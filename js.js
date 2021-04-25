@@ -29,7 +29,9 @@ window.addEventListener('DOMContentLoaded', function() {
     let gameTimeSec;
     let oldVer;
     let dayTime = 0;
+    let today = getDay();
     let dataForSend = {
+        data: today,
         OneP: "", // done
         TwoP: "", // done
         dayTime: 0, // done
@@ -136,7 +138,6 @@ window.addEventListener('DOMContentLoaded', function() {
             createBlockScore(Object.keys(currentScore)[1], (Object.keys(currentScore)[1] == currentScore["firstPlayer"]) ? true : false);
             // время игры
             gameTimeSec = 0;
-            console.log('how much');
             intervalGame = setInterval(()=> {
                 gameTimeSec += 1;
                 let minCont = Math.trunc(gameTimeSec / 60);
@@ -198,7 +199,6 @@ window.addEventListener('DOMContentLoaded', function() {
                     finish();
                 }
             }
-            // console.log(oldVer);
             
             function finish() {
                 let winner = (currentScore[FP] > currentScore[SP]) ? FP : SP;
@@ -211,16 +211,6 @@ window.addEventListener('DOMContentLoaded', function() {
                 winnermessage.querySelector('.totalScore').textContent = totalScore[FP] + " : " + totalScore[SP];
             }
             
-            // if((currentScore[currentScore["firstPlayer"]] === 11 && currentScore[currentScore["secondPlayer"]] < 10) ||
-            // (currentScore[currentScore["secondPlayer"]] === 11 && currentScore[currentScore["firstPlayer"]] < 10) || (
-            //     sum >= 20 && (currentScore[one]  + 2 == currentScore[two] || currentScore[two] + 2 == currentScore[one] ))) {
-            //     let winner = (currentScore[one] > currentScore[two]) ? one : two;
-            //     winnermessage.style.display = 'block';
-            //     (winner === firstPlayer) ? totalScore[firstPlayer] += 1 :  totalScore[secondPlayer] += 1;
-            //     winnermessage.querySelector('.winnerIs').textContent = "Победил " + winner;
-            //     winnermessage.querySelector('.totalScore').textContent = totalScore[Object.keys(currentScore)[0]] + " : " + totalScore[Object.keys(currentScore)[1]];
-            // } else {
-            // }
         } 
     });
     // начать новый раунт
@@ -234,7 +224,8 @@ window.addEventListener('DOMContentLoaded', function() {
         let min = Math.trunc(dayTime / 60);
         let hour = Math.trunc(dayTime / 3600);
         contDayTime.textContent = ((hour <= 9) ? "0"+hour : hour) + " : " + ((min <= 9) ? "0"+min : min) + " : " + ((sec <= 9) ? "0"+sec : sec); 
-        
+        // добавить данные в dataForSend
+        ChangeSendObj();
         // сбросить данные
         currentScore[Object.keys(currentScore)[0]] = 0;
         currentScore[Object.keys(currentScore)[1]] = 0;
@@ -293,20 +284,54 @@ window.addEventListener('DOMContentLoaded', function() {
         globalScore.textContent = currentScore[Object.keys(currentScore)[0]] + " : " + currentScore[Object.keys(currentScore)[1]];
     }
     function ChangeSendObj() {
-        // добавить данные во временную базу
+        let nameOne = dataForSend["OneP"];
+        let nameTwo = dataForSend["TwoP"];
+        // Все время за день
         dataForSend["dayTime"] = dayTime;
+        // Самая быстрая/долгая игра 
         dataForSend["roundTimeFast"] = (dataForSend["roundTimeFast"] < gameTimeSec && dataForSend["roundTimeFast"] != 0) ? dataForSend["roundTimeFast"] : gameTimeSec;
         dataForSend["roundTimeSlow"] = (dataForSend["roundTimeSlow"] > gameTimeSec && dataForSend["roundTimeSlow"] != 0) ? dataForSend["roundTimeSlow"] : gameTimeSec;
+        // Наибольший раунд
         if(dataForSend["biggestRound"]) {
             let bigArr = dataForSend["biggestRound"].split(":");
-            console.log("sum " + sum);
-            console.log("newsum");
-            console.log(Number(bigArr[0]) + Number(bigArr[1]));
-            if((Number(bigArr[0]) + Number(bigArr[1])) > sum) {
-                dataForSend["biggestRound"] = currentScore[Object.keys(currentScore)[0]] + " : " + currentScore[Object.keys(currentScore)[1]];
+            let oldsum =Number(bigArr[0]) + Number(bigArr[1]); 
+            if(sum > oldsum) {
+                dataForSend["biggestRound"] = currentScore[nameOne] + " : " + currentScore[nameTwo];
             }
         } else {
-            dataForSend["biggestRound"] = currentScore[Object.keys(currentScore)[0]] + " : " + currentScore[Object.keys(currentScore)[1]];
+            dataForSend["biggestRound"] = currentScore[nameOne] + " : " + currentScore[nameTwo];
         }
+        // общий счет за день
+        dataForSend["dayScore"] = totalScore[nameOne] + " : " + totalScore[nameTwo]; 
+        // Обсолютный провал
+        let curOne = currentScore[nameOne];
+        let curTwo = currentScore[nameTwo];
+        if(curOne > curTwo) {
+            // фотальный счет для второго (второй проиграл)
+            changeLoser("fotalFailForTwo");
+        } else {
+            // фотальный счет для первого (первый проиграл)
+            changeLoser("fotalFailForOne");
+        }
+        function changeLoser(loser) {
+            if(dataForSend[loser]) {
+                let bigArr = dataForSend[loser].split(":");
+                let olddifference = Math.abs(bigArr[0]-bigArr[1]);
+                let newdifference = Math.abs(currentScore[nameOne] - currentScore[nameTwo]);
+                if(newdifference > olddifference) {
+                    dataForSend[loser] = currentScore[nameOne] + " : " + currentScore[nameTwo];
+                }
+            } else {
+                dataForSend[loser] = currentScore[nameOne] + " : " + currentScore[nameTwo];
+            }
+        }
+
+    }
+    function getDay() {
+        let data = new Date();
+        let day = (data.getDate() <=9) ? "0"+data.getDate() : data.getDate();
+        let month = ((data.getMonth()+1) <=9) ? "0"+(data.getMonth()+1) : (data.getMonth()+1);
+        let year = data.getFullYear();
+        return day+"."+month+"."+year;
     }
 });
