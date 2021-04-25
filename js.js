@@ -14,7 +14,7 @@ window.addEventListener('DOMContentLoaded', function() {
         totalSP = document.querySelector('.secondPlayer'),
         restart = document.querySelector('.repeat'),
         timeGame = document.querySelector('.time-game'),
-        contDayTime = document.querySelector('.dayTime');
+        contDayTime = document.querySelector('.globalTime');
     // totalwins.style.display = "none";
 
     whoIsFirst.style.display = 'none';
@@ -68,6 +68,10 @@ window.addEventListener('DOMContentLoaded', function() {
         if(Object.keys(currentScore).length < 2) {
             alert("Выбери двух игроков!");
         } else {
+            // 00:00
+            console.log(currentScore);
+            document.querySelector('.globalTime').textContent = "00:00";
+            document.querySelector('.globalFullScore').textContent = Object.keys(currentScore)[0][0]+" 0 : 0 "+Object.keys(currentScore)[1][0];
             // показать поля для выбора первого игрока
             steps[0].style.display = "none";
             steps[1].style.display = "block";
@@ -101,6 +105,8 @@ window.addEventListener('DOMContentLoaded', function() {
     // начать игру
     whoIsFirst.querySelector('.next').addEventListener('click', ()=> {  
         if(Object.keys(currentScore).length === 4) {
+            // 00:00
+            timeGame.textContent = "00:00";
             // добавитеь первого и второго игрока во временную базу
             if(Object.keys(currentScore)[0] > Object.keys(currentScore)[1]) {
                 dataForSend["OneP"] = Object.keys(currentScore)[0];
@@ -224,6 +230,8 @@ window.addEventListener('DOMContentLoaded', function() {
         let min = Math.trunc(dayTime / 60);
         let hour = Math.trunc(dayTime / 3600);
         contDayTime.textContent = ((hour <= 9) ? "0"+hour : hour) + " : " + ((min <= 9) ? "0"+min : min) + " : " + ((sec <= 9) ? "0"+sec : sec); 
+        console.log(totalScore);
+        document.querySelector('.globalFullScore').textContent = `${Object.keys(totalScore)[0][0]} ${totalScore[Object.keys(totalScore)[0]]} : ${totalScore[Object.keys(totalScore)[1]]}  ${Object.keys(totalScore)[1][0]} `;
         // добавить данные в dataForSend
         ChangeSendObj();
         // сбросить данные
@@ -233,6 +241,7 @@ window.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.btnwin').forEach(item => item.remove());
         // 
         console.log(dataForSend);
+        startQuery();
     });
     // вернуться в игру
     document.querySelector('.return-in-game').addEventListener("click", () => {
@@ -333,5 +342,20 @@ window.addEventListener('DOMContentLoaded', function() {
         let month = ((data.getMonth()+1) <=9) ? "0"+(data.getMonth()+1) : (data.getMonth()+1);
         let year = data.getFullYear();
         return day+"."+month+"."+year;
+    }
+
+    function startQuery() {
+        let xhr = new XMLHttpRequest();
+
+        let formData = JSON.stringify(dataForSend);
+        xhr.open("POST", "", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        console.log(formData);
+        xhr.send(formData);
+        xhr.onreadystatechange = ()=> {
+            if(xhr.readyState === 4 && xhr.status === 200) {
+                console.log('All is ok!');
+            }
+        }
     }
 });

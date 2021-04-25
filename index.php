@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,16 +22,29 @@
         </div>
     </div>
     <div class="whoIsFirst">
-        <p>Кто первый?</p>
+        <!-- <p>Кто первый?</p> -->
+        <div class="mainPlace">
+            <div class="mainPlace_block globalTime">
+            </div>
+            <div class="mainPlace_block globalFullScore">
+                
+            </div>
+        </div>
         <div class="chooseFirst">
 
         </div>
         <div class="btns">
-            <button class="prev">Назад</button>
+            <button class="prev">
+            <?php 
+                if($_REQUEST)  {
+                    $print_r($_REQUEST);
+                } else {
+                    echo "no";
+                }
+            ?>    
+            Назад</button>
             <button class="next">Вперед</button>
         </div>
-        <p>время в игре за сегодня</p>
-        <p class="dayTime">00:00:00</p>
     </div>
     <div class="playSpace">
         <div class="general">
