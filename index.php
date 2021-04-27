@@ -1,4 +1,6 @@
+<?php
 
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,13 +37,6 @@
         </div>
         <div class="btns">
             <button class="prev">
-            <?php 
-                if($_REQUEST)  {
-                    $print_r($_REQUEST);
-                } else {
-                    echo "no";
-                }
-            ?>    
             Назад</button>
             <button class="next">Вперед</button>
         </div>
@@ -78,3 +73,6 @@
     <script src="js.js"></script>
 </body>
 </html>
+<?php 
+
+?>

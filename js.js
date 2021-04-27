@@ -348,9 +348,8 @@ window.addEventListener('DOMContentLoaded', function() {
         let xhr = new XMLHttpRequest();
 
         let formData = JSON.stringify(dataForSend);
-        xhr.open("POST", "", true);
+        xhr.open("POST", "vender/create.php", true);
         xhr.setRequestHeader("Content-Type", "application/json");
-        console.log(formData);
         xhr.send(formData);
         xhr.onreadystatechange = ()=> {
             if(xhr.readyState === 4 && xhr.status === 200) {
