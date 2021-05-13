@@ -32,15 +32,15 @@ window.addEventListener('DOMContentLoaded', function() {
     let today = getDay();
     let dataForSend = {
         data: today,
-        OneP: "", // done
-        TwoP: "", // done
-        dayTime: 0, // done
+        OneP: "", 
+        TwoP: "", 
+        dayTime: 0, 
         roundTimeFast: 0, 
         roundTimeSlow: 0, 
-        firsts: "", // done
+        firsts: "", 
         fotalFailForOne: "", //фотальный для первого означает, что он ПРОИГРАЛ с большим разбросом
         fotalFailForTwo: "", 
-        biggestRound: "", // done
+        biggestRound: "", 
         dayScore: "",
     };
     // получить имя игроков
@@ -68,10 +68,18 @@ window.addEventListener('DOMContentLoaded', function() {
         if(Object.keys(currentScore).length < 2) {
             alert("Выбери двух игроков!");
         } else {
+            // правильный порядок игроков
+            if(Object.keys(currentScore)[0] < Object.keys(currentScore)[1]) {
+                let replaceOne = Object.keys(currentScore)[0];
+                let replaceTwo = Object.keys(currentScore)[1];
+                delete currentScore[replaceOne];
+                delete currentScore[replaceTwo];
+                currentScore[replaceTwo] = 0;
+                currentScore[replaceOne] = 0;
+            } 
             // 00:00
-            console.log(currentScore);
             document.querySelector('.globalTime').textContent = "00:00";
-            document.querySelector('.globalFullScore').textContent = Object.keys(currentScore)[0][0]+" 0 : 0 "+Object.keys(currentScore)[1][0];
+            document.querySelector('.globalFullScore').textContent = Object.keys(currentScore)[0][0]+" 0 : 0 " + Object.keys(currentScore)[1][0];
             // показать поля для выбора первого игрока
             steps[0].style.display = "none";
             steps[1].style.display = "block";
@@ -230,7 +238,6 @@ window.addEventListener('DOMContentLoaded', function() {
         let min = Math.trunc(dayTime / 60);
         let hour = Math.trunc(dayTime / 3600);
         contDayTime.textContent = ((hour <= 9) ? "0"+hour : hour) + " : " + ((min <= 9) ? "0"+min : min) + " : " + ((sec <= 9) ? "0"+sec : sec); 
-        console.log(totalScore);
         document.querySelector('.globalFullScore').textContent = `${Object.keys(totalScore)[0][0]} ${totalScore[Object.keys(totalScore)[0]]} : ${totalScore[Object.keys(totalScore)[1]]}  ${Object.keys(totalScore)[1][0]} `;
         // добавить данные в dataForSend
         ChangeSendObj();
@@ -240,7 +247,6 @@ window.addEventListener('DOMContentLoaded', function() {
         oldVer = Object.assign({}, totalScore);
         document.querySelectorAll('.btnwin').forEach(item => item.remove());
         // 
-        console.log(dataForSend);
         startQuery();
     });
     // вернуться в игру
@@ -343,7 +349,6 @@ window.addEventListener('DOMContentLoaded', function() {
         let year = data.getFullYear();
         return day+"."+month+"."+year;
     }
-
     function startQuery() {
         let xhr = new XMLHttpRequest();
 
@@ -353,7 +358,6 @@ window.addEventListener('DOMContentLoaded', function() {
         xhr.send(formData);
         xhr.onreadystatechange = ()=> {
             if(xhr.readyState === 4 && xhr.status === 200) {
-                console.log('All is ok!');
             }
         }
     }
