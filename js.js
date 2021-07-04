@@ -247,7 +247,7 @@ window.addEventListener('DOMContentLoaded', function() {
         oldVer = Object.assign({}, totalScore);
         document.querySelectorAll('.btnwin').forEach(item => item.remove());
         // 
-        startQuery();
+        startQueryGIVE();
     });
     // вернуться в игру
     document.querySelector('.return-in-game').addEventListener("click", () => {
@@ -349,13 +349,25 @@ window.addEventListener('DOMContentLoaded', function() {
         let year = data.getFullYear();
         return day+"."+month+"."+year;
     }
-    function startQuery() {
+    function startQueryGIVE() {
         let xhr = new XMLHttpRequest();
 
         let formData = JSON.stringify(dataForSend);
         xhr.open("POST", "vender/create.php", true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(formData);
+        xhr.onreadystatechange = ()=> {
+            if(xhr.readyState === 4 && xhr.status === 200) {
+            }
+        }
+    }
+    function startQueryGET() {
+        let xhr = new XMLHttpRequest();
+
+        // let formData = JSON.stringify(dataForSend);
+        xhr.open("GET", "vender/create.php", true);
+        // xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send();
         xhr.onreadystatechange = ()=> {
             if(xhr.readyState === 4 && xhr.status === 200) {
             }
